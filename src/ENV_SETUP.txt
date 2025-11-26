@@ -1,0 +1,433 @@
+================================================================================
+ZEN-MIND ENVIRONMENT VARIABLES SETUP GUIDE
+================================================================================
+
+This guide contains ALL environment variables needed for both FRONTEND and BACKEND.
+
+================================================================================
+📱 FRONTEND ENVIRONMENT VARIABLES
+================================================================================
+
+Location: /src/.env (create this file in the root of frontend folder)
+
+---
+REQUIRED FOR LOCAL DEVELOPMENT:
+---
+
+VITE_API_URL=http://localhost:5000
+
+❗ IMPORTANT: Do NOT add /api at the end! It's added automatically in the code.
+
+
+---
+FOR RENDER DEPLOYMENT (Frontend):
+---
+
+In Render Dashboard → Your Frontend Service → Environment:
+
+Key: VITE_API_URL
+Value: https://your-backend-name.onrender.com
+
+(Replace "your-backend-name" with your actual Render backend service name)
+
+❗ Again: Do NOT add /api at the end!
+
+
+---
+OPTIONAL (Already configured in code):
+---
+
+# Botpress AI Chat (already hardcoded, no need to set)
+# VITE_BOTPRESS_WEBCHAT_URL=https://cdn.botpress.cloud/webchat/v3.3/shareable.html
+# VITE_BOTPRESS_CONFIG_URL=https://files.bpcontent.cloud/2025/11/09/17/20251109173139-QPZXD221.json
+
+# Razorpay (NOT USED - app uses fake payments)
+# VITE_RAZORPAY_KEY_ID=your-razorpay-key-id
+
+
+================================================================================
+🔧 BACKEND ENVIRONMENT VARIABLES
+================================================================================
+
+Location: /server/.env (create this file in the server folder)
+
+---
+REQUIRED:
+---
+
+# Server Port
+PORT=5000
+
+# MongoDB Connection (REQUIRED - Get from MongoDB Atlas)
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/zenmind?retryWrites=true&w=majority
+
+# JWT Secret (REQUIRED - Generate random string)
+JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
+
+# JWT Expiry
+JWT_EXPIRE=7d
+
+# Node Environment
+NODE_ENV=development
+
+# Frontend URLs for CORS (REQUIRED)
+FRONTEND_URL=http://localhost:3000
+CLIENT_URL=http://localhost:3000
+
+# Email Configuration (REQUIRED for appointment notifications)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-specific-password
+EMAIL_FROM=ZEN-MIND <your-email@gmail.com>
+
+# Jitsi Configuration (REQUIRED for video sessions)
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=vpaas-magic-cookie-your-app-id
+JITSI_API_KEY=your-jitsi-api-key
+
+
+---
+FOR RENDER DEPLOYMENT (Backend):
+---
+
+In Render Dashboard → Your Backend Service → Environment:
+
+Add these key-value pairs:
+
+PORT=5000
+
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/zenmind?retryWrites=true&w=majority
+
+JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
+
+JWT_EXPIRE=7d
+
+NODE_ENV=production
+
+FRONTEND_URL=https://your-frontend-name.onrender.com
+CLIENT_URL=https://your-frontend-name.onrender.com
+
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-specific-password
+EMAIL_FROM=ZEN-MIND <your-email@gmail.com>
+
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=vpaas-magic-cookie-your-app-id
+JITSI_API_KEY=your-jitsi-api-key
+
+
+================================================================================
+📋 SETUP CHECKLIST
+================================================================================
+
+FRONTEND SETUP:
+☐ Create /src/.env file
+☐ Add: VITE_API_URL=http://localhost:5000
+☐ Restart frontend: npm run dev
+
+BACKEND SETUP:
+☐ Create /server/.env file
+☐ Add all 10 required variables (see above)
+☐ Replace placeholder values with real ones:
+  - MONGODB_URI: Your MongoDB Atlas connection string
+  - JWT_SECRET: Random secure string
+  - EMAIL_USER: Your Gmail address
+  - EMAIL_PASSWORD: Gmail app-specific password
+  - JITSI credentials: From Jitsi developer console
+☐ Restart backend: node server.js
+
+
+================================================================================
+🔐 HOW TO GET THESE VALUES
+================================================================================
+
+---
+1. MONGODB_URI
+---
+1. Go to https://mongodb.com/cloud/atlas
+2. Create free cluster (M0)
+3. Database Access → Add User
+4. Network Access → Add IP (0.0.0.0/0 for development)
+5. Connect → Connect your application → Copy connection string
+6. Replace <password> with your password
+7. Add database name: /zenmind
+
+Example:
+mongodb+srv://myuser:mypassword@cluster0.abc123.mongodb.net/zenmind?retryWrites=true&w=majority
+
+
+---
+2. JWT_SECRET
+---
+Generate random secure string:
+
+Option A: Node.js
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+Option B: Online
+https://randomkeygen.com/ (use CodeIgniter Encryption Keys)
+
+Option C: Manual
+Type any long random string: aB3$kL9#pQ2@mN7!xR5&
+
+
+---
+3. EMAIL_USER & EMAIL_PASSWORD
+---
+For Gmail:
+
+1. Go to https://myaccount.google.com/
+2. Security → 2-Step Verification (enable if not already)
+3. App passwords → Generate new app password
+4. Select "Mail" and "Other (Custom name)"
+5. Name it "ZEN-MIND"
+6. Copy the 16-character password
+
+EMAIL_USER=youremail@gmail.com
+EMAIL_PASSWORD=abcd efgh ijkl mnop (16 chars, no spaces in actual use)
+
+
+---
+4. JITSI_APP_ID & JITSI_API_KEY
+---
+Option A: Use Default (Free Jitsi Meet)
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=your-app-name
+JITSI_API_KEY=not-required-for-free-tier
+
+Option B: Get Custom Jitsi (for branding)
+1. Go to https://jaas.8x8.vc/
+2. Sign up for free tier
+3. Create app → Get credentials
+4. Copy App ID and API Key
+
+
+================================================================================
+⚠️ COMMON MISTAKES TO AVOID
+================================================================================
+
+❌ WRONG: VITE_API_URL=http://localhost:5000/api
+✅ RIGHT: VITE_API_URL=http://localhost:5000
+
+❌ WRONG: MONGODB_URI=your-connection-string (with literal text)
+✅ RIGHT: MONGODB_URI=mongodb+srv://... (actual connection string)
+
+❌ WRONG: JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
+✅ RIGHT: JWT_SECRET=f7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2 (random string)
+
+❌ WRONG: Putting backend .env variables in frontend
+✅ RIGHT: Frontend = /src/.env, Backend = /server/.env
+
+❌ WRONG: Using same values in local and production
+✅ RIGHT: Different URLs for local (localhost) and production (Render URLs)
+
+
+================================================================================
+🧪 VERIFY SETUP WORKS
+================================================================================
+
+---
+Test Backend:
+---
+
+1. Start backend:
+   cd server
+   node server.js
+
+2. Should see:
+   ✅ Server is running on port 5000
+   ✅ MongoDB Connected
+   ✅ Found X therapists in database
+
+3. Test health endpoint:
+   Open browser: http://localhost:5000/api/health
+   Should see: {"success":true,"message":"API is running"}
+
+
+---
+Test Frontend:
+---
+
+1. Start frontend:
+   cd src (or root folder with package.json)
+   npm run dev
+
+2. Should see:
+   VITE ready in XXX ms
+   ➜  Local:   http://localhost:3000/
+
+3. Open browser: http://localhost:3000
+
+4. Check Console (F12):
+   Should see: 🚀 API_URL: http://localhost:5000
+   Should NOT see: ❌ POST .../api/api/... 404
+
+
+---
+Test Authentication:
+---
+
+1. Click "Get Started" or "Sign In"
+2. Enter email/password
+3. Click Login
+4. Should successfully log in (no 404 error)
+
+
+================================================================================
+📦 EXAMPLE FILES
+================================================================================
+
+---
+Example: /src/.env (Frontend)
+---
+
+VITE_API_URL=http://localhost:5000
+
+
+---
+Example: /server/.env (Backend - Local Development)
+---
+
+PORT=5000
+MONGODB_URI=mongodb+srv://zenminduser:MyP@ssw0rd@cluster0.abc123.mongodb.net/zenmind?retryWrites=true&w=majority
+JWT_SECRET=f7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s6t7u8v9w0x1y2z3
+JWT_EXPIRE=7d
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+CLIENT_URL=http://localhost:3000
+EMAIL_USER=myemail@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+EMAIL_FROM=ZEN-MIND <myemail@gmail.com>
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=zenmind-video
+JITSI_API_KEY=not-required
+
+
+---
+Example: Render Environment Variables (Backend - Production)
+---
+
+PORT=5000
+MONGODB_URI=mongodb+srv://zenminduser:MyP@ssw0rd@cluster0.abc123.mongodb.net/zenmind?retryWrites=true&w=majority
+JWT_SECRET=f7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s6t7u8v9w0x1y2z3
+JWT_EXPIRE=7d
+NODE_ENV=production
+FRONTEND_URL=https://zen-mind-frontend.onrender.com
+CLIENT_URL=https://zen-mind-frontend.onrender.com
+EMAIL_USER=myemail@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+EMAIL_FROM=ZEN-MIND <myemail@gmail.com>
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=zenmind-video
+JITSI_API_KEY=not-required
+
+
+================================================================================
+🚀 DEPLOYMENT TO RENDER
+================================================================================
+
+BACKEND DEPLOYMENT:
+
+1. Push code to GitHub
+2. Render Dashboard → New → Web Service
+3. Connect GitHub repository
+4. Settings:
+   - Name: zen-mind-backend
+   - Environment: Node
+   - Build Command: cd server && npm install
+   - Start Command: cd server && node server.js
+   - Instance Type: Free
+
+5. Environment Variables (Add all 10 from above):
+   - PORT=5000
+   - MONGODB_URI=...
+   - JWT_SECRET=...
+   - JWT_EXPIRE=7d
+   - NODE_ENV=production
+   - FRONTEND_URL=https://your-frontend.onrender.com
+   - CLIENT_URL=https://your-frontend.onrender.com
+   - EMAIL_USER=...
+   - EMAIL_PASSWORD=...
+   - EMAIL_FROM=...
+   - JITSI_DOMAIN=meet.jit.si
+   - JITSI_APP_ID=...
+   - JITSI_API_KEY=...
+
+6. Create Web Service
+
+7. Wait for deploy (5-10 minutes)
+
+8. Copy backend URL: https://zen-mind-backend.onrender.com
+
+
+FRONTEND DEPLOYMENT:
+
+1. Render Dashboard → New → Static Site
+2. Connect same GitHub repository
+3. Settings:
+   - Name: zen-mind-frontend
+   - Build Command: npm install && npm run build
+   - Publish Directory: dist
+
+4. Environment Variables (Add 1):
+   - VITE_API_URL=https://zen-mind-backend.onrender.com
+   (Use backend URL from step 8 above, NO /api at end!)
+
+5. Create Static Site
+
+6. Wait for deploy (3-5 minutes)
+
+7. Open URL: https://zen-mind-frontend.onrender.com
+
+8. Test login and features
+
+
+================================================================================
+📞 TROUBLESHOOTING
+================================================================================
+
+Problem: "Route not found" error when logging in
+Solution: Check VITE_API_URL doesn't have /api at the end
+
+Problem: "MongoDB connection failed"
+Solution: Check MONGODB_URI is correct, whitelist IP 0.0.0.0/0
+
+Problem: "JWT must be provided" / "Invalid token"
+Solution: Check JWT_SECRET is set and same in all environments
+
+Problem: "CORS error"
+Solution: Check FRONTEND_URL in backend .env matches actual frontend URL
+
+Problem: Email notifications not working
+Solution: Check EMAIL_USER and EMAIL_PASSWORD (use Gmail app password)
+
+Problem: Video call not loading
+Solution: Check JITSI_DOMAIN, ensure meet.jit.si is accessible
+
+Problem: Frontend shows blank page
+Solution: Check browser console for errors, verify API_URL is correct
+
+
+================================================================================
+✅ FINAL CHECKLIST BEFORE DEPLOYMENT
+================================================================================
+
+☐ Both .env files created (frontend and backend)
+☐ All placeholder values replaced with real credentials
+☐ MongoDB Atlas cluster created and whitelisted
+☐ JWT secret generated (random string)
+☐ Gmail app password generated
+☐ Tested locally (both frontend and backend running)
+☐ Login works without 404 errors
+☐ Backend health endpoint returns 200 OK
+☐ Code pushed to GitHub
+☐ Backend deployed to Render with all env vars
+☐ Frontend deployed to Render with VITE_API_URL
+☐ Production login tested successfully
+☐ Video call tested (optional but recommended)
+
+
+================================================================================
+Last Updated: November 25, 2025
+Version: 1.0
+Status: ✅ Double /api bug fixed - app works locally and on Render
+================================================================================

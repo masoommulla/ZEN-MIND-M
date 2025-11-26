@@ -1,0 +1,252 @@
+================================================================================
+ZEN-MIND - QUICK REFERENCE CARD
+================================================================================
+
+📁 PROJECT STRUCTURE
+================================================================================
+
+ZEN-MIND/
+├── src/                          ← Frontend (React + Vite)
+│   ├── .env                      ← Frontend environment variables
+│   ├── .env.example
+│   ├── components/               ← All React components
+│   ├── services/api.ts           ← API calls
+│   ├── config.ts                 ← API_URL configuration
+│   └── App.tsx                   ← Main app component
+│
+└── server/                       ← Backend (Node.js + Express)
+    ├── .env                      ← Backend environment variables
+    ├── .env.example
+    ├── server.js                 ← Main server file
+    ├── models/                   ← MongoDB schemas
+    ├── routes/                   ← API routes
+    └── middleware/               ← Auth, validation, etc.
+
+
+🔧 ENVIRONMENT VARIABLES
+================================================================================
+
+FRONTEND (/src/.env):
+---------------------
+VITE_API_URL=http://localhost:5000      ← NO /api at end!
+
+
+BACKEND (/server/.env):
+-----------------------
+PORT=5000
+MONGODB_URI=mongodb+srv://...           ← From MongoDB Atlas
+JWT_SECRET=random-secret-string         ← Generate random
+JWT_EXPIRE=7d
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+CLIENT_URL=http://localhost:3000
+EMAIL_USER=your-email@gmail.com         ← Gmail address
+EMAIL_PASSWORD=app-password             ← Gmail app password
+EMAIL_FROM=ZEN-MIND <your-email@gmail.com>
+JITSI_DOMAIN=meet.jit.si
+JITSI_APP_ID=your-app-name
+JITSI_API_KEY=not-required
+
+
+🚀 LOCAL DEVELOPMENT
+================================================================================
+
+Terminal 1 (Backend):
+---------------------
+cd server
+npm install
+node server.js
+
+Should see:
+✅ Server is running on port 5000
+✅ MongoDB Connected
+
+
+Terminal 2 (Frontend):
+----------------------
+npm install
+npm run dev
+
+Should see:
+➜  Local:   http://localhost:3000/
+
+
+Browser:
+--------
+http://localhost:3000          ← Frontend app
+http://localhost:5000/api/health   ← Backend health check
+
+
+📦 DEPLOYMENT TO RENDER
+================================================================================
+
+BACKEND:
+--------
+1. New Web Service
+2. Build: cd server && npm install
+3. Start: cd server && node server.js
+4. Add 10 environment variables (see above, change to production values)
+5. Copy backend URL: https://zen-mind-backend.onrender.com
+
+
+FRONTEND:
+---------
+1. New Static Site
+2. Build: npm install && npm run build
+3. Publish: dist
+4. Add 1 environment variable:
+   VITE_API_URL=https://zen-mind-backend.onrender.com
+5. Deploy!
+
+
+🔑 KEY FEATURES
+================================================================================
+
+✅ Teen Authentication (Email + Password)
+✅ Therapist Authentication (Separate login)
+✅ AI Chatbot (Botpress integration)
+✅ Mood Tracking (Daily mood journal)
+✅ Journal Entries (Private notes)
+✅ Therapist Booking System
+✅ Fake Payment System (No real money)
+✅ Video Sessions (Jitsi Meet)
+✅ Appointment Management
+✅ Rating & Review System
+✅ Refund Functionality
+✅ Email Notifications
+
+
+🎯 MAIN PAGES
+================================================================================
+
+/ ................................ Landing page
+/dashboard ....................... Teen dashboard
+/mood ............................ Mood tracker
+/journal ......................... Journal entries
+/therapists ...................... Find therapists
+/appointments .................... My appointments
+/video/:id ....................... Video call session
+/therapist-portal ................ Therapist login
+/therapist-dashboard ............. Therapist dashboard
+
+
+🔗 API ENDPOINTS
+================================================================================
+
+Auth:
+POST   /api/auth/register           Register new teen user
+POST   /api/auth/login              Teen login
+POST   /api/auth/logout             Logout
+GET    /api/auth/me                 Get current user
+
+Therapist Auth:
+POST   /api/therapist-auth/login    Therapist login
+GET    /api/therapist-auth/me       Get current therapist
+
+Therapists:
+GET    /api/therapist/all           Get all therapists
+GET    /api/therapist/:id           Get therapist profile
+GET    /api/therapist/slots         Get therapist slots
+POST   /api/therapist/slots         Create slots
+
+Bookings:
+POST   /api/booking/create          Create booking
+POST   /api/booking/confirm         Confirm payment
+GET    /api/booking/my              Get my bookings
+
+Appointments:
+GET    /api/appointment/user        Teen appointments
+GET    /api/appointment/therapist   Therapist appointments
+POST   /api/appointment/:id/review  Add review/rating
+POST   /api/appointment/:id/refund  Request refund
+
+Mood:
+POST   /api/mood/create             Log mood
+GET    /api/mood/user               Get mood history
+
+Journal:
+POST   /api/journal/create          Create entry
+GET    /api/journal/user            Get entries
+
+
+⚠️ COMMON ISSUES & FIXES
+================================================================================
+
+Issue: "Route not found" 404 error
+Fix: Check VITE_API_URL doesn't have /api at end
+
+Issue: MongoDB connection failed
+Fix: Whitelist IP 0.0.0.0/0 in MongoDB Atlas
+
+Issue: CORS error
+Fix: Check FRONTEND_URL matches actual frontend URL
+
+Issue: JWT error
+Fix: Ensure JWT_SECRET is set in backend .env
+
+Issue: Email not sending
+Fix: Use Gmail app password, not regular password
+
+Issue: Vite config error
+Fix: Restart dev server after .env changes
+
+
+📋 TEST CREDENTIALS
+================================================================================
+
+Create your own accounts or use seeded therapists:
+
+Therapists (8 pre-seeded in database):
+- Check server logs after startup for therapist list
+- Default therapist login: therapist1@example.com / password123
+
+Teen Users:
+- Register new account on signup page
+- Or create via POST /api/auth/register
+
+
+💡 QUICK TIPS
+================================================================================
+
+✅ Always restart servers after .env changes
+✅ Use Gmail app passwords, not regular passwords
+✅ Whitelist 0.0.0.0/0 in MongoDB for development
+✅ Check browser console (F12) for errors
+✅ Backend logs show request URLs and errors
+✅ Free Render services sleep after inactivity (cold starts)
+✅ First request to sleeping service takes 30-60 seconds
+✅ Keep backend healthy with cron job or UptimeRobot
+
+
+🛠️ USEFUL COMMANDS
+================================================================================
+
+Generate JWT Secret:
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+Check MongoDB Connection:
+cd server && node test-db.js
+
+Seed Therapists:
+cd server && node utils/therapistSeeder.js
+
+Verify Deployment Ready:
+node verify-deployment-ready.js
+
+Check Environment Variables:
+node check-env.js
+
+
+📚 DOCUMENTATION FILES
+================================================================================
+
+ENV_SETUP.txt ................... Complete environment setup guide
+QUICK_REFERENCE.txt ............. This file
+.env.example (frontend) ......... Frontend env template
+server/.env.example (backend) ... Backend env template
+
+
+================================================================================
+Last Updated: November 25, 2025
+Status: ✅ All MD files removed, ENV docs created
+================================================================================
